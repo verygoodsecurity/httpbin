@@ -17,7 +17,7 @@ mistune==0.8.4
 pip==20.2.2
 pycparser==2.20
 pyrsistent==0.16.0
-PyYAML==5.3.1
+PyYAML==5.4
 raven==6.10.0
 setuptools==49.3.1
 six==1.15.0
