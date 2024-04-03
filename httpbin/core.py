@@ -1135,7 +1135,7 @@ def digest_auth(
     if qop not in ("auth", "auth-int"):
         qop = None
 
-    authorization = request.authorization
+    authorization = request.headers.get("Authorization")
     credentials = None
     if authorization:
         credentials = Authorization.from_header(authorization)
