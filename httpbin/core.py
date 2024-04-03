@@ -27,10 +27,9 @@ from flask import (
     abort,
 )
 from six.moves import range as xrange
-from werkzeug.datastructures import WWWAuthenticate, MultiDict
+from werkzeug.datastructures import Authorization, WWWAuthenticate, MultiDict
 from werkzeug.http import http_date
-from werkzeug.wrappers import BaseResponse
-from werkzeug.http import parse_authorization_header
+from werkzeug.wrappers import Response
 from flasgger import Swagger, NO_SANITIZER
 
 from . import filters
@@ -77,7 +76,7 @@ def jsonify(*args, **kwargs):
 
 
 # Prevent WSGI from correcting the casing of the Location header
-BaseResponse.autocorrect_location_header = False
+Response.autocorrect_location_header = False
 
 # Find the correct template folder when running from a different location
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
@@ -1136,10 +1135,10 @@ def digest_auth(
     if qop not in ("auth", "auth-int"):
         qop = None
 
-    authorization = request.headers.get("Authorization")
+    authorization = request.authorization
     credentials = None
     if authorization:
-        credentials = parse_authorization_header(authorization)
+        credentials = Authorization.from_header(authorization)
 
     if (
         not authorization
