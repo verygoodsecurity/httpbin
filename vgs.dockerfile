@@ -1,11 +1,7 @@
 FROM python:3.11-bookworm as builder
 
 RUN apt-get update
-RUN apt-get install -y gcc
-RUN apt-get install -y python3-dev
-RUN apt-get install -y libffi-dev
-RUN apt-get install -y musl-dev
-RUN apt-get install -y git
+RUN apt-get install -y gcc python3-dev libffi-dev musl-dev git
 
 WORKDIR /build
 ADD ./requirements.txt /build/requirements.txt

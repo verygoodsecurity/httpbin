@@ -7,20 +7,18 @@ httpbin.helpers
 This module provides helper functions for httpbin.
 """
 
-import json
 import base64
+import json
+import os
 import re
 import time
-import os
 from hashlib import md5, sha256, sha512
-from werkzeug.datastructures import WWWAuthenticate, Authorization
 
 from flask import request, make_response
 from six.moves.urllib.parse import urlparse, urlunparse
-
+from werkzeug.datastructures import WWWAuthenticate, Authorization
 
 from .structures import CaseInsensitiveDict
-
 
 ASCII_ART = """
     -=[ teapot ]=-
@@ -465,9 +463,13 @@ def digest_challenge_response(app, qop, algorithm, stale = False):
     ]), algorithm)
     opaque = H(os.urandom(10), algorithm)
 
-    auth = WWWAuthenticate("digest")
-    auth.set_digest('me@kennethreitz.com', nonce, opaque=opaque,
-                    qop=('auth', 'auth-int') if qop is None else (qop,), algorithm=algorithm)
-    auth.stale = stale
-    response.headers['WWW-Authenticate'] = auth.to_header()
+    auth = WWWAuthenticate('digest',
+                           {
+                               'realm': 'me@kennethreitz.com',
+                               'nonce': nonce,
+                               'opaque': opaque,
+                               'qop': ('auth', 'auth-int') if qop is None else qop,
+                               'algorithm': algorithm,
+                               'stale': str(stale).upper()})
+    response.www_authenticate = auth
     return response

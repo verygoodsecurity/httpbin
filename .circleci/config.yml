@@ -39,11 +39,21 @@ jobs:
       - <<: *setup-env
       - run: |
           ./ops/docker-login.sh
-          docker-compose build httpbin
+          docker-compose build 
           ./ops/docker-save.sh
       - <<: *persist-workspace
 
 #  TODO: Here should be some test as well to verify that container is actually starting in the image and can respond to basic commands
+
+  test:
+    <<: *machine-setup
+    <<: *job-defaults
+    steps:
+      - <<: *attach-workspace
+      - <<: *setup-env
+      - run: |
+          ./ops/docker-login.sh
+          docker-compose run test
 
   deploy-image:
     <<: *machine-setup
@@ -66,6 +76,15 @@ workflows:
           filters:
             tags:
               only: /.*/
+            branches:
+              only: /.*/
+      - test:
+          context:
+            - circleci
+            - aws-accounts
+          requires:
+            - build
+          filters:
             branches:
               only: /.*/
       - deploy-image:
