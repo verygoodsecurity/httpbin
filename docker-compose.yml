@@ -9,3 +9,9 @@ services:
       dockerfile: vgs.dockerfile
     ports:
       - '8000:8000'
+
+  test:
+    image: python:3.9.16-slim
+    build:
+      context: .
+      dockerfile: vgs.tests.dockerfile
