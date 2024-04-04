@@ -39,7 +39,7 @@ jobs:
       - <<: *setup-env
       - run: |
           ./ops/docker-login.sh
-          docker-compose build 
+          docker-compose build httpbin
           ./ops/docker-save.sh
       - <<: *persist-workspace
 
@@ -52,7 +52,7 @@ jobs:
       - <<: *attach-workspace
       - <<: *setup-env
       - run: |
-          ./ops/docker-login.sh
+          docker-compose build test
           docker-compose run test
 
   deploy-image:
